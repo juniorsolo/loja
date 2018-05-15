@@ -11,6 +11,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.glassfish.grizzly.http.server.HttpServer;
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.filter.LoggingFilter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,11 +25,16 @@ import br.com.alura.loja.modelo.Produto;
 public class ClienteTest {
 	
 	private HttpServer server;
-	Client cliente= ClientBuilder.newClient();
-	private WebTarget target =  cliente.target("http://localhost:8080");
-	
+	ClientConfig config = new ClientConfig();
+	Client cliente;
+	private WebTarget target;
 	@Before
 	public void iniciaServer() {
+		//configurando o log
+		config.register(new LoggingFilter());
+		//adicionando o log ao client
+		cliente= ClientBuilder.newClient(config);
+		target =  cliente.target("http://localhost:8080");
 		server = Servidor.iniciaServidor();
 	}
 	

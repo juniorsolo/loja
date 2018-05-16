@@ -6,6 +6,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -16,6 +17,7 @@ import com.google.gson.Gson;
 
 import br.com.alura.loja.dao.CarrinhoDAO;
 import br.com.alura.loja.modelo.Carrinho;
+import br.com.alura.loja.modelo.Produto;
 
 @Path("carrinhos")
 public class CarrinhoResource {
@@ -57,5 +59,17 @@ public class CarrinhoResource {
 			System.err.println(e.getMessage());
 			return Response.serverError().build();
 		}
+	}
+	
+	// put usado para trocar uma representação inteira ou parte dela. 
+	// nesse exemplo usando a uri para identificar.
+	@Path("{id}/produtos/{produtoId}/quantidade")
+	@PUT
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response alteraProduto(String conteudo, @PathParam("id") long id, @PathParam("produtoId") long produtoId) {
+		Carrinho carrinho = new CarrinhoDAO().busca(id);
+		Produto produto = new Gson().fromJson(conteudo, Produto.class);
+		carrinho.trocaQuantidade(produto);
+		return Response.ok().build();
 	}
 }
